@@ -36,7 +36,7 @@ foreach ($rline in $rlines) {
   Invoke-Expression $exp
 }
 function rlist() {
-  $RList
+  $RList | Sort-Object Alias
 }
 
 ##JumpList
@@ -55,7 +55,7 @@ foreach ($jline in $jlines) {
 $exp += "default {Start-Process `"$STR`"} } } }"
 Invoke-Expression $exp
 function jlist() {
-  $JList
+  $JList | Sort-Object Alias
 }
 
 ##EditList
@@ -74,7 +74,7 @@ foreach ($eline in $elines) {
 $exp += "} } }"
 Invoke-Expression $exp
 function elist() {
-  $EList
+  $EList | Sort-Object Alias
 }
 
 ##GoList
@@ -93,7 +93,7 @@ foreach ($gline in $glines) {
 $exp += "default {Start-Process `"$BROWSER`" -ArgumentList `"`$STR --new-window`"} } } }"
 Invoke-Expression $exp
 function glist() {
-  $GList
+  $GList | Sort-Object Alias
 }
 
 echo "MAP launched!!"
