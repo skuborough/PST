@@ -1,14 +1,14 @@
 $RLIST_NAME = "rlist.csv"
-$JLIST_NAME = "jlist.csv"
+$FLIST_NAME = "flist.csv"
 $ELIST_NAME = "elist.csv"
-$GLIST_NAME = "glist.csv"
-$EDITOR = ""
-$BROWSER = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+$BLIST_NAME = "blist.csv"
+$EDITOR = "C:\Users\XXX\AppData\Local\Programs\EmEditor\EmEditor.exe"
+$BROWSER = "C:\Program Files\Mozilla Firefox\firefox.exe"
 $BASE_PATH = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RLIST_PATH = Join-Path $BASE_PATH $RLIST_NAME
-$JLIST_PATH = Join-Path $BASE_PATH $JLIST_NAME
+$FLIST_PATH = Join-Path $BASE_PATH $FLIST_NAME
 $ELIST_PATH = Join-Path $BASE_PATH $ELIST_NAME
-$GLIST_PATH = Join-Path $BASE_PATH $GLIST_NAME
+$BLIST_PATH = Join-Path $BASE_PATH $BLIST_NAME
 
 function Check-Alias($STR) {
   if (Test-Path Alias:$STR) {
@@ -39,26 +39,26 @@ function rlist() {
   $RList | Sort-Object Alias
 }
 
-##JumpList
-$JList = @()
-$jlines = Import-Csv $JLIST_PATH -Encoding UTF8
-Check-Alias j
-$exp = "function j(`$STR) {if (`$STR -eq `$null) {Start-Process shell:MyComputerFolder} else { switch(`$STR){"
-foreach ($jline in $jlines) {
+##FilerList
+$FList = @()
+$flines = Import-Csv $FLIST_PATH -Encoding UTF8
+Check-Alias f
+$exp = "function f(`$STR) {if (`$STR -eq `$null) {Start-Process shell:MyComputerFolder} else { switch(`$STR){"
+foreach ($fline in $flines) {
   $obj = New-Object PSCustomObject
-  $obj | Add-Member -MemberType NoteProperty -Name Name -Value $jline.Name
-  $obj | Add-Member -MemberType NoteProperty -Name Alias -Value $jline.Alias
-  $obj | Add-Member -MemberType NoteProperty -Name Path -Value $jline.Path
-  $JList += $obj
-  $exp += "$($jline.Alias) {Start-Process `"$($jline.Path)`"; break}"
+  $obj | Add-Member -MemberType NoteProperty -Name Name -Value $fline.Name
+  $obj | Add-Member -MemberType NoteProperty -Name Alias -Value $fline.Alias
+  $obj | Add-Member -MemberType NoteProperty -Name Path -Value $fline.Path
+  $FList += $obj
+  $exp += "$($fline.Alias) {Start-Process `"$($fline.Path)`"; break}"
 }
 $exp += "default {Start-Process `"$STR`"} } } }"
 Invoke-Expression $exp
-function jlist() {
-  $JList | Sort-Object Alias
+function flist() {
+  $FList | Sort-Object Alias
 }
 
-##EditList
+##EditorList
 $EList = @()
 $elines = Import-Csv $ELIST_PATH -Encoding UTF8
 Check-Alias e
@@ -77,23 +77,23 @@ function elist() {
   $EList | Sort-Object Alias
 }
 
-##GoList
-$GList = @()
-$glines = Import-Csv $GLIST_PATH -Encoding UTF8
-Check-Alias g
-$exp = "function g(`$STR) { if (`$STR -eq `$null) {Start-Process `"$BROWSER`"} else {switch(`$STR){"
-foreach ($gline in $glines) {
+##BrowserList
+$BList = @()
+$blines = Import-Csv $BLIST_PATH -Encoding UTF8
+Check-Alias b
+$exp = "function b(`$STR) { if (`$STR -eq `$null) {Start-Process `"$BROWSER`"} else {switch(`$STR){"
+foreach ($bline in $blines) {
   $obj = New-Object PSCustomObject
-  $obj | Add-Member -MemberType NoteProperty -Name Name -Value $gline.Name
-  $obj | Add-Member -MemberType NoteProperty -Name Alias -Value $gline.Alias
-  $obj | Add-Member -MemberType NoteProperty -Name Path -Value $gline.Path
-  $GList += $obj
-  $exp += "$($gline.Alias) {Start-Process `"$BROWSER`" -ArgumentList `"$($gline.Path) --new-window`"; break}"
+  $obj | Add-Member -MemberType NoteProperty -Name Name -Value $bline.Name
+  $obj | Add-Member -MemberType NoteProperty -Name Alias -Value $bline.Alias
+  $obj | Add-Member -MemberType NoteProperty -Name Path -Value $bline.Path
+  $BList += $obj
+  $exp += "$($bline.Alias) {Start-Process `"$BROWSER`" -ArgumentList `"$($bline.Path) --new-window`"; break}"
 }
 $exp += "default {Start-Process `"$BROWSER`" -ArgumentList `"`$STR --new-window`"} } } }"
 Invoke-Expression $exp
-function glist() {
-  $GList | Sort-Object Alias
+function blist() {
+  $BList | Sort-Object Alias
 }
 
 echo "MAP launched!!"
